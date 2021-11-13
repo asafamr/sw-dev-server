@@ -1,0 +1,25 @@
+{
+  "name": "sw-dev-server",
+  "version": "1.0.0",
+  "description": "dev server on service worker for svelte + HMR? - POC",
+  "main": "index.js",
+  "scripts": {
+    "serve":"node -r esbuild-register serve.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asafamr/sw-dev-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/asafamr/sw-dev-server/issues"
+  },
+  "homepage": "https://github.com/asafamr/sw-dev-server#readme",
+  "devDependencies": {
+    "esbuild": "^0.13.13",
+    "esbuild-register": "^3.1.2",
+    "typescript": "^4.4.4"
+  }
+}
