@@ -19,10 +19,10 @@
   </head>
   <body>
     <div class="main">
-      <div>this is a private dev "serverless dev server" - request are served from a service worker and aren't sent over the
+      <div>this is a private dev "serverless dev server" - requests are served from a service worker and aren't sent over the
         internet. code is here https://github.com/asafamr/sw-dev-server</div>
       <div class="onwaiting">
-        waiting for serivce worker
+        waiting for service worker
       </div>
       <div class="onready">
           test caching a path - results in console
@@ -82,7 +82,7 @@
         .then((registration) => {
           document.querySelector(".main").classList.add("ready");
           console.debug("dev server service worker ready");
-          parent.postMessage("swready");
+          parent.postMessage("swready", "*");
           activeReg = registration.active;
         })
         .catch(function (error) {
