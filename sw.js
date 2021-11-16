@@ -3,7 +3,8 @@
   var sw = self;
   var pages = {};
   sw.addEventListener("fetch", function(event) {
-    if (!new URL(event.request.url).pathname.startsWith("/dev"))
+    const base = self.location.pathname.slice(0, self.location.pathname.lastIndexOf("/"));
+    if (!new URL(event.request.url).pathname.startsWith(base + "/dev"))
       return null;
     if (event.request.method === "POST") {
       return event.respondWith(Promise.resolve().then(async () => {
