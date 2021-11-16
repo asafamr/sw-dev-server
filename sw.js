@@ -8,16 +8,17 @@
       return null;
     if (event.request.method === "POST") {
       return event.respondWith(Promise.resolve().then(async () => {
-        pages[event.request.url] = await event.request.text();
+        pages[event.request.url] = await event.request.json();
         return new Response("OK", { status: 200, statusText: "OK" });
       }));
     } else if (event.request.method === "GET" && Object.keys(pages).includes(event.request.url)) {
-      return event.respondWith(new Response(pages[event.request.url], {
+      return event.respondWith(new Response(pages[event.request.url].content, {
         status: 200,
         statusText: "OK",
         headers: {
           "Cache-Control": "no-cache, no-store, must-revalidate",
           Pragma: "no-cache",
+          "Content-Type": pages[event.request.url].mime,
           Expires: "0"
         }
       }));

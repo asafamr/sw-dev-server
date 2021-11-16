@@ -38,15 +38,13 @@
           <div id="fromsw"></div>
           <div>path<input id="swsendpath" /></div>
           <div>value<input id="swsendvalue" /></div>
-          <div><button onclick="sendsw()">set</button></div>
+          <div><button onclick="sendWorker(document.getElementById('swsendpath').value, 'text/html', document.getElementById('swsendvalue').value)">set</button></div>
         </div>
       </div>
     </div>
     <script>
-      async function sendsw() {
-        const swsendpath = document.getElementById("swsendpath").value;
-        const swsendvalue = document.getElementById("swsendvalue").value;
-        const res = await fetch("./dev/" + swsendpath, { body: swsendvalue, method: "POST" });
+      async function sendWorker(path, mime, content) {
+        const res = await fetch("./dev/" + path, { body: JSON.stringify({content, mime}), method: "POST" });
         console.log("sent", res.status);
       }
       async function getsw() {
@@ -54,6 +52,11 @@
         const res = await fetch("./dev/" + swpath).then((x) => x.text());
         console.log("got", res);
       }
+      window.addEventListener("message",(msg)=>{
+        if(msg?.data.type === "post"){
+          sendWorker(msg.data.path,msg.data.mime, msg.data.content)
+        }
+      })
     </script>
     <script type="module">
       let activeReg;
