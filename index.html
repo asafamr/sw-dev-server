@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Test serivce worker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      .onready {
+        display: none;
+      }
+      .main.ready .onwaiting {
+        display: none;
+      }
+      .main.ready .onready {
+        display: initial;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <div>this is a private dev "serverless dev server" - request are served from a service worker and aren't sent over the
+        internet. code is here https://github.com/asafamr/sw-dev-server</div>
+      <div class="onwaiting">
+        waiting for serivce worker
+      </div>
+      <div class="onready">
+          test caching a path - results in console
+        <div>
+          <h1>get from sw</h1>
+          <div id="fromsw"></div>
+          <div>path<input id="swpath" /></div>
+          <div><button onclick="getsw()">get</button></div>
+        </div>
+        <hr />
+        <div>
+          <h1>send to sw</h1>
+          <div id="fromsw"></div>
+          <div>path<input id="swsendpath" /></div>
+          <div>value<input id="swsendvalue" /></div>
+          <div><button onclick="sendsw()">set</button></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      async function sendsw() {
+        const swsendpath = document.getElementById("swsendpath").value;
+        const swsendvalue = document.getElementById("swsendvalue").value;
+        const res = await fetch("http://localhost:9898/dev/" + swsendpath, { body: swsendvalue, method: "POST" });
+        console.log("sent", res.status);
+      }
+      async function getsw() {
+        const swpath = document.getElementById("swpath").value;
+        const res = await fetch("http://localhost:9898/dev/" + swpath).then((x) => x.text());
+        console.log("got", res);
+      }
+    </script>
+    <script type="module">
+      let activeReg;
+      navigator.serviceWorker
+        .register("sw.js", {
+          scope: "./",
+        })
+        .then(function (registration) {
+          return new Promise(function (resolve, reject) {
+            if (registration.installing) {
+              registration.installing.addEventListener("statechange", function (e) {
+                if (e.target.state == "installed") {
+                  resolve(registration);
+                } else if (e.target.state == "redundant") {
+                  reject();
+                }
+              });
+            } else {
+              resolve(registration);
+            }
+          });
+        })
+        .then((registration) => {
+          document.querySelector(".main").classList.add("ready");
+          console.debug("dev server service worker ready");
+          parent.postMessage("swready");
+          activeReg = registration.active;
+        })
+        .catch(function (error) {
+          console.error("dev server service worker reg error", error);
+          alert("dev server service worker reg error " + error);
+        });
+      navigator.serviceWorker.addEventListener("controllerchange", (ev) => {
+        activeReg = ev.target.controller;
+      });
+    </script>
+  </body>
+</html>
