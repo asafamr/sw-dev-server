@@ -46,12 +46,12 @@
       async function sendsw() {
         const swsendpath = document.getElementById("swsendpath").value;
         const swsendvalue = document.getElementById("swsendvalue").value;
-        const res = await fetch("http://localhost:9898/dev/" + swsendpath, { body: swsendvalue, method: "POST" });
+        const res = await fetch("./dev/" + swsendpath, { body: swsendvalue, method: "POST" });
         console.log("sent", res.status);
       }
       async function getsw() {
         const swpath = document.getElementById("swpath").value;
-        const res = await fetch("http://localhost:9898/dev/" + swpath).then((x) => x.text());
+        const res = await fetch("./dev/" + swpath).then((x) => x.text());
         console.log("got", res);
       }
     </script>
