@@ -9,55 +9,26 @@ declare var clients: Clients;
  *
  */
 
-
-
-async function getUrl(pathname: string) {
-  pathname = pathname.replace(/^\/dep\//, "");
-  let content = devPages[pathname];
-  if (content) {
-    const responseInit = {
+const pages: Record<string, string> = {};
+sw.addEventListener("fetch", function (event: FetchEvent) {
+  const base = self.location.pathname.slice(0,self.location.pathname.lastIndexOf('/'))
+  if (!new URL(event.request.url).pathname.startsWith(base+"/dev")) return null;
+  if (event.request.method === "POST") {
+    return event.respondWith(Promise.resolve().then(async ()=>{
+      pages[event.request.url] = await event.request.text();
+      return new Response("OK",{status:200, statusText:'OK'});
+    }))
+  } else if (event.request.method === "GET" && Object.keys(pages).includes(event.request.url)) {
+    return event.respondWith(new Response(pages[event.request.url], {
       status: 200,
       statusText: "OK",
       headers: {
         "Cache-Control": "no-cache, no-store, must-revalidate",
         Pragma: "no-cache",
         Expires: "0",
-        "Content-Type": content.type,
       },
-    };
-    console.log(content.type);
-    return new Response(content, responseInit);
-  } else {
-    const responseInit = {
-      status: 400,
-      statusText: "Bad Request",
-      headers: {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        Pragma: "no-cache",
-        Expires: "0",
-        "Content-Type": "text/html",
-      },
-    };
-    return new Response("could not find page", responseInit);
+    }));
   }
-}
-const pages: Record<string, string> = {};
-sw.addEventListener("fetch", async function (event: FetchEvent) {
-    if(event.request.method === 'POST'){
-        pages[event.request.url]= await event.request.text();
-        return new Response("ok");
-    }else if(event.request.method === 'GET' && Object.keys(pages).includes(event.request.url)){
-        return new Response(pages[event.request.url],{
-            status: 200,
-            statusText: "OK",
-            headers: {
-              "Cache-Control": "no-cache, no-store, must-revalidate",
-              Pragma: "no-cache",
-              Expires: "0",
-            //   "Content-Type": content.type,
-            }});
-    }
-  return new Response('ERR', {status:404, statusText:"Not Found"})
 });
 
 sw.addEventListener("activate", (event) => {
@@ -66,11 +37,7 @@ sw.addEventListener("activate", (event) => {
 });
 
 sw.addEventListener("install", function (event) {
-  // The promise that skipWaiting() returns can be safely ignored.
   console.log("Installing new version");
   event.waitUntil(sw.skipWaiting());
 
-  // Perform any other actions required for your
-  // service worker to install, potentially inside
-  // of event.waitUntil();
 });
