@@ -13,12 +13,7 @@ const pages: Record<string, any> = {};
 sw.addEventListener("fetch", function (event: FetchEvent) {
   const base = self.location.pathname.slice(0,self.location.pathname.lastIndexOf('/'))
   if (!new URL(event.request.url).pathname.startsWith(base+"/dev")) return null;
-  if (event.request.method === "POST") {
-    return event.respondWith(Promise.resolve().then(async ()=>{
-      pages[event.request.url] = await event.request.json();
-      return new Response("OK",{status:200, statusText:'OK'});
-    }))
-  } else if (event.request.method === "GET" && Object.keys(pages).includes(event.request.url)) {
+  if (event.request.method === "GET" && Object.keys(pages).includes(event.request.url)) {
     return event.respondWith(new Response(pages[event.request.url].content, {
       status: 200,
       statusText: "OK",
@@ -31,14 +26,20 @@ sw.addEventListener("fetch", function (event: FetchEvent) {
     }));
   }
 });
-
+sw.addEventListener("message", msg=>{
+  if(msg?.data?.type==="add"){
+    const {url, content, mime} = msg.data;
+    pages[url] = {content,mime};
+    msg.ports[0].postMessage('ok');
+  }
+})
 sw.addEventListener("activate", (event) => {
   event.waitUntil(clients.claim());
-  console.log("Now ready to handle fetches!");
+  // console.log("Now ready to handle fetches!");
 });
 
 sw.addEventListener("install", function (event) {
-  console.log("Installing new version");
+  // console.log("Installing new version");
   event.waitUntil(sw.skipWaiting());
 
 });

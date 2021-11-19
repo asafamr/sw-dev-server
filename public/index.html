@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Test serivce worker</title>
+    <title>Dev serivce worker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       .onready {
@@ -12,54 +12,42 @@
       .main.ready .onwaiting {
         display: none;
       }
-      .main.ready .onready {
-        display: initial;
-      }
     </style>
   </head>
   <body>
     <div class="main">
-      <div>this is a private dev "serverless dev server" - requests are served from a service worker and aren't sent over the
-        internet. code is here https://github.com/asafamr/sw-dev-server</div>
+     <!-- this is a private dev "serverless dev server" - requests are served from a service worker and aren't sent over the
+        internet. code is here https://github.com/asafamr/sw-dev-server -->
       <div class="onwaiting">
-        waiting for service worker
-      </div>
-      <div class="onready">
-          test caching a path - results in console
-        <div>
-          <h1>get from sw</h1>
-          <div id="fromsw"></div>
-          <div>path<input id="swpath" /></div>
-          <div><button onclick="getsw()">get</button></div>
-        </div>
-        <hr />
-        <div>
-          <h1>send to sw</h1>
-          <div id="fromsw"></div>
-          <div>path<input id="swsendpath" /></div>
-          <div>value<input id="swsendvalue" /></div>
-          <div><button onclick="sendWorker(document.getElementById('swsendpath').value, 'text/html', document.getElementById('swsendvalue').value)">set</button></div>
-        </div>
+        Loading service worker...
       </div>
     </div>
-    <script>
-      async function sendWorker(path, mime, content) {
-        const res = await fetch("./dev/" + path, { body: JSON.stringify({content, mime}), method: "POST" });
-        console.log("sent", res.status);
-      }
-      async function getsw() {
-        const swpath = document.getElementById("swpath").value;
-        const res = await fetch("./dev/" + swpath).then((x) => x.text());
-        console.log("got", res);
-      }
-      window.addEventListener("message",(msg)=>{
-        if(msg?.data.type === "post"){
-          sendWorker(msg.data.path,msg.data.mime, msg.data.content)
-        }
-      })
-    </script>
+ 
     <script type="module">
       let activeReg;
+
+      function sendMessage(message) {
+            return new Promise(function(resolve, reject) {
+              var messageChannel = new MessageChannel();
+              messageChannel.port1.onmessage = function(event) {
+                if (event.data.error) {
+                  reject(event.data.error);
+                } else {
+                  resolve(event.data);
+                }
+              };
+              activeReg.postMessage(message, [messageChannel.port2]);
+            });
+      }
+
+      window.addEventListener("message",(msg)=>{
+        if(activeReg && msg?.data?.type === 'add'){
+          sendMessage(msg.data).then(res=>{
+            parent.postMessage({type:'synced', url:msg?.data?.url}, "*")
+          })
+        }
+      })
+      
       navigator.serviceWorker
         .register("sw.js", {
           scope: "./",
