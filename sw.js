@@ -23,7 +23,7 @@
     if (msg?.data?.type === "add") {
       const { url, content, mime } = msg.data;
       pages[url] = { content, mime };
-      msg.source.postMessage({ type: "synced", url }, "*");
+      msg.ports[0].postMessage("ok");
     }
   });
   sw.addEventListener("activate", (event) => {

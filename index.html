@@ -25,14 +25,29 @@
  
     <script type="module">
       let activeReg;
+
+      function sendMessage(message) {
+            return new Promise(function(resolve, reject) {
+              var messageChannel = new MessageChannel();
+              messageChannel.port1.onmessage = function(event) {
+                if (event.data.error) {
+                  reject(event.data.error);
+                } else {
+                  resolve(event.data);
+                }
+              };
+              activeReg.postMessage(message, [messageChannel.port2]);
+            });
+      }
+
       window.addEventListener("message",(msg)=>{
         if(activeReg && msg?.data?.type === 'add'){
-          activeReg.postMessage(msg.data)
-        }
-        if(parent && msg?.data?.type === 'synced'){
-          parent.postMessage(msg.data, "*")
+          sendMessage(msg.data).then(res=>{
+            parent.postMessage({type:'synced', url:msg?.data?.rul}, "*")
+          })
         }
       })
+      
       navigator.serviceWorker
         .register("sw.js", {
           scope: "./",
