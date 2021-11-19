@@ -9,12 +9,13 @@
 </head>
 <body>
     <iframe id="ifrm-sw" style="position:absolute; visibility:none" src="https://asafamr.github.io/sw-dev-server/"></iframe>
-    <iframe id="ifrm-viewport" style="position:absolute; visibility:none" src="https://asafamr.github.io/sw-dev-server/dev/cccc"></iframe>
+    <iframe id="ifrm-viewport" style="position:absolute; visibility:none" src="https://asafamr.github.io/sw-dev-server/dev/cccc2"></iframe>
 
     <script>
         window.addEventListener('message',(msg)=>{
+            console.log('index got msg', msg)
       if(msg.data === 'swready'){
-      document.getElementById('ifrm-sw').contentWindow.postMessage({type:"add", content:'wondergful',url:"https://asafamr.github.io/sw-dev-server/dev/cccc", mime:"text/html"}, "*")
+      document.getElementById('ifrm-sw').contentWindow.postMessage({type:"add", content:'wondergful',url:"https://asafamr.github.io/sw-dev-server/dev/cccc2", mime:"text/html"}, "*")
       document.getElementById('ifrm-viewport').style.visibility="initial"
       document.getElementById('ifrm-viewport').src+=""
     //   document.getElementById('ifrm-viewport').src += ''
