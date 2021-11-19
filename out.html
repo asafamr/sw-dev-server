@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+</head>
+<body>
+    <iframe id="ifrm-sw" src="https://asafamr.github.io/sw-dev-server/"></iframe>
+
+    <script>
+        window.addEventListener('message',(msg)=>{
+      if(msg.data === 'swready'){
+      document.getElementById('ifrm-sw').contentWindow.postMessage({type:"add", content:'nice',url:"https://asafamr.github.io/sw-dev-server/dev/asdasd1234", mime:"text/html"}, "*")
+    //   document.getElementById('ifrm-viewport').src += ''
+
+        // document.getElementById('ifrm').contentWindow.postMessage({type:"post", content:'nice',path:"somepaccc", mime:"text/html"}, "*")
+      } 
+    })
+    </script>
+</body>
+</html>

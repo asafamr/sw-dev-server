@@ -28,7 +28,7 @@
       window.addEventListener("message",(msg)=>{
         console.log('got messg', msg, activeReg)
         if(activeReg){
-          activeReg.postMessage(msg)
+          activeReg.postMessage(msg.data)
         }
       })
       navigator.serviceWorker
