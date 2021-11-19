@@ -26,9 +26,11 @@
     <script type="module">
       let activeReg;
       window.addEventListener("message",(msg)=>{
-        console.log('got messg', msg, activeReg)
-        if(activeReg){
+        if(activeReg && msg?.data?.type === 'add'){
           activeReg.postMessage(msg.data)
+        }
+        if(parent && msg?.data?.type === 'synced'){
+          parent.postMessage(msg.data, "*")
         }
       })
       navigator.serviceWorker

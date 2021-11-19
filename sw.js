@@ -23,14 +23,13 @@
     if (msg?.data?.type === "add") {
       const { url, content, mime } = msg.data;
       pages[url] = { content, mime };
+      msg.source.postMessage({ type: "synced", url });
     }
   });
   sw.addEventListener("activate", (event) => {
     event.waitUntil(clients.claim());
-    console.log("Now ready to handle fetches!");
   });
   sw.addEventListener("install", function(event) {
-    console.log("Installing new version");
     event.waitUntil(sw.skipWaiting());
   });
 })();

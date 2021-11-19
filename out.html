@@ -5,16 +5,18 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Page Title</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
     <script src='main.js'></script>
 </head>
 <body>
-    <iframe id="ifrm-sw" src="https://asafamr.github.io/sw-dev-server/"></iframe>
+    <iframe id="ifrm-sw" style="position:absolute; visibility:none" src="https://asafamr.github.io/sw-dev-server/"></iframe>
+    <iframe id="ifrm-viewport" style="position:absolute; visibility:none" src="https://asafamr.github.io/sw-dev-server/dev/cccc"></iframe>
 
     <script>
         window.addEventListener('message',(msg)=>{
       if(msg.data === 'swready'){
-      document.getElementById('ifrm-sw').contentWindow.postMessage({type:"add", content:'nice',url:"https://asafamr.github.io/sw-dev-server/dev/asdasd1234", mime:"text/html"}, "*")
+      document.getElementById('ifrm-sw').contentWindow.postMessage({type:"add", content:'wondergful',url:"https://asafamr.github.io/sw-dev-server/dev/cccc", mime:"text/html"}, "*")
+      document.getElementById('ifrm-viewport').style.visibility="initial"
+      document.getElementById('ifrm-viewport').src+=""
     //   document.getElementById('ifrm-viewport').src += ''
 
         // document.getElementById('ifrm').contentWindow.postMessage({type:"post", content:'nice',path:"somepaccc", mime:"text/html"}, "*")
