@@ -43,7 +43,7 @@
       window.addEventListener("message",(msg)=>{
         if(activeReg && msg?.data?.type === 'add'){
           sendMessage(msg.data).then(res=>{
-            parent.postMessage({type:'synced', url:msg?.data?.rul}, "*")
+            parent.postMessage({type:'synced', url:msg?.data?.url}, "*")
           })
         }
       })
