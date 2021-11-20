@@ -29,7 +29,7 @@ sw.addEventListener("fetch", function (event: FetchEvent) {
 sw.addEventListener("message", msg=>{
   if(msg?.data?.type==="add"){
     const {url, content, mime} = msg.data;
-    pages[url] = {content,mime};
+    pages[new URL(url, (msg.source as Client).url).toString()] = {content,mime};
     msg.ports[0].postMessage('ok');
   }
 })
