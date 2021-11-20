@@ -22,7 +22,7 @@
   sw.addEventListener("message", (msg) => {
     if (msg?.data?.type === "add") {
       const { url, content, mime } = msg.data;
-      pages[url] = { content, mime };
+      pages[new URL(url, msg.source.url).toString()] = { content, mime };
       msg.ports[0].postMessage("ok");
     }
   });

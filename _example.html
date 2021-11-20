@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Dev Server Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      iframe{
+        border: none;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe id="ifrm-sw" style="position: absolute; visibility: none;" src="./index.html"></iframe>
+    <iframe id="ifrm-viewport" style="position: absolute; visibility: none;" src=""></iframe>
+
+    <script>
+      const rnd = (Math.random() + 1).toString(36).substring(7);
+      window.addEventListener("message", (msg) => {
+        if (msg.data === "swready") {
+          console.log("inner swready");
+          document
+            .getElementById("ifrm-sw")
+            .contentWindow.postMessage(
+              { type: "add", content: "awsome!", url: "./dev/" + rnd, mime: "text/html" },
+              "*"
+            );
+        }
+        if (msg.data && msg.data.type === "synced") {
+          document.getElementById("ifrm-viewport").src = msg.data.url;
+          document.getElementById("ifrm-viewport").style.visibility = "initial";
+          console.log("inner synced");
+        }
+      });
+    </script>
+  </body>
+</html>
