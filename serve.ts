@@ -3,7 +3,7 @@ import { serve } from "esbuild";
 serve(
   {
     servedir: "./public",
-    port: 9898
+    port: parseInt(process.env.port || '9898')
   },
   {
     plugins: [

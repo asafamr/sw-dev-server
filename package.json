@@ -7,7 +7,8 @@
     "serve": "node -r esbuild-register serve.ts",
     "build": "node -r esbuild-register build.ts",
     "deploy": "npm run build && gh-pages -d public",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "playwright": "playwright test",
+    "test": "concurrently -k npm:serve npm:playwright"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,8 @@
   },
   "homepage": "https://github.com/asafamr/sw-dev-server#readme",
   "devDependencies": {
+    "@playwright/test": "^1.16.3",
+    "concurrently": "^6.4.0",
     "esbuild": "^0.13.13",
     "esbuild-register": "^3.1.2",
     "gh-pages": "^3.2.3",
