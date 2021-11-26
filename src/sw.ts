@@ -2,7 +2,7 @@
 /// <reference lib="es2020" />
 /// <reference lib="WebWorker" />
 
-import localforage from "localforage"
+import localforage, { driver } from "localforage"
 const sw = (self as any) as ServiceWorkerGlobalScope & typeof globalThis;
 declare var clients: Clients;
 /**
@@ -10,7 +10,8 @@ declare var clients: Clients;
  *
  */
  var store = localforage.createInstance({
-  name: "sw-dev-server"
+  name: "sw-dev-server",
+  driver:localforage.INDEXEDDB
 });
 
 

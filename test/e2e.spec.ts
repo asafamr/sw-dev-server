@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 test("basic test", async ({ page }) => {
   await page.goto(`http://localhost:${process.env.port || 9898}/`);
+  // await page.goto(`https://asafamr.github.io/sw-dev-server/`);
   await page.waitForEvent("console", { predicate: (x) => x.text().includes("dev server service worker ready"), timeout: 1000 });
   await page.evaluate(()=>{
     const rnd = (Math.random() + 1).toString(36).substring(7);
