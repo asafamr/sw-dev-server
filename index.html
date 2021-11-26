@@ -12,6 +12,16 @@
       .main.ready .onwaiting {
         display: none;
       }
+      .main.ready .onready {
+        display: initial;
+      }
+      html,body,iframe{
+        margin:0;
+        padding: 0;
+        border: none;
+        width: 100%;
+        height: 100%;
+      }
     </style>
   </head>
   <body>
@@ -20,6 +30,9 @@
         internet. code is here https://github.com/asafamr/sw-dev-server -->
       <div class="onwaiting">
         Loading service worker...
+      </div>
+      <div class="onready">
+        <iframe id="main-view"></iframe>
       </div>
     </div>
  
@@ -43,7 +56,9 @@
       window.addEventListener("message",(msg)=>{
         if(activeReg && msg?.data?.type === 'add'){
           sendMessage(msg.data).then(res=>{
+            document.getElementById('main-view').src = msg?.data?.url;
             parent.postMessage({type:'synced', url:msg?.data?.url}, "*")
+            console.debug("dev server synced");
           })
         }
       })
