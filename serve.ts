@@ -3,6 +3,7 @@ import { serve } from "esbuild";
 serve(
   {
     servedir: "./public",
+    host:'localhost',
     port: parseInt(process.env.port || '9898')
   },
   {
@@ -14,4 +15,6 @@ serve(
     sourceRoot: "./src",
     entryPoints: ["./src/sw.ts"],
   }
-);
+).then(r=>{
+  console.log(`Serving at http://${r.host}:${r.port}`)
+});
